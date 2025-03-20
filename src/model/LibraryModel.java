@@ -8,11 +8,13 @@
 
 package model;
 
+
 import java.util.*;
 
 import store.MusicStore;
 
 public class LibraryModel {
+
     private Set<Song> songs; //User song collection
     private Set<Album> albums; // User album collection
     private Map<String, Playlist> playlists; // User playlists
@@ -78,19 +80,6 @@ public class LibraryModel {
         Playlist playlist = playlists.get(name);
         return playlist.removeSong(song);
     }
-
-    // Checks to see if there is a favorite playlist, 
-    // if its not then creates a new playlist and adds that song, else just adds song to fav playlist
-    //public boolean addFavorite(Song song){
-    //    if (playlists.containsKey("Favorite") == false){
-    //        createPlaylist("Favorite");
-    //        addSongToPlaylist("Favorite", song);
-    //        return true;
-    //    } else {
-    //        addSongToPlaylist("Favorite", song);
-    //        return true;
-    //    }
-    //}
 
     public boolean makeFavorite(Song song){
         if (songs.contains(song)){
@@ -228,6 +217,7 @@ public class LibraryModel {
     public Map<String, Playlist> getPlaylist(){
         return Collections.unmodifiableMap(playlists);
     }
+
 
     @Override
     public String toString(){
