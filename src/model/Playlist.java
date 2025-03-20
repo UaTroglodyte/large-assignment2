@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Playlist {
+public class Playlist{
     private String name;
     private List<Song> songs;
 
