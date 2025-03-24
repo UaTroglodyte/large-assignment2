@@ -23,9 +23,17 @@ public class Playlist{
     public void addSong(Song song){
         songs.add(song);
     }
+    
+    public void addSongs(List<Song> songs) {
+        this.songs.addAll(songs);
+    }
 
     public boolean removeSong(Song song){
         return songs.remove(song);
+    }
+
+    public void clearSongs() {
+        songs.clear();
     }
 
     public String getName(){
