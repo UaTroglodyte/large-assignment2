@@ -52,6 +52,16 @@ public class LibraryModel {
         }
         return false;
     }
+    
+    // Removes a Song
+    public boolean removeSong(Song song) {
+        return songs.remove(song);
+    }
+    
+    // Removes an Album
+    public boolean removeAlbum(Album album) {
+        return albums.remove(album);
+    }
 
 
     // Creates new Playlist
@@ -79,18 +89,6 @@ public class LibraryModel {
         return playlist.removeSong(song);
     }
 
-    // Checks to see if there is a favorite playlist, 
-    // if its not then creates a new playlist and adds that song, else just adds song to fav playlist
-    //public boolean addFavorite(Song song){
-    //    if (playlists.containsKey("Favorite") == false){
-    //        createPlaylist("Favorite");
-    //        addSongToPlaylist("Favorite", song);
-    //        return true;
-    //    } else {
-    //        addSongToPlaylist("Favorite", song);
-    //        return true;
-    //    }
-    //}
 
     public boolean makeFavorite(Song song){
         if (songs.contains(song)){
@@ -156,6 +154,67 @@ public class LibraryModel {
             }
         }
         return artistAlbums;
+    }
+    
+    // Search User Library for genre
+    public List<Song> searchSongsByGenre(String genre){
+        List<Song> genreSongs = new ArrayList<>();
+        for (Song song : songs){
+            if (song.getGenre().equalsIgnoreCase(genre)){
+                genreSongs.add(song);
+            }
+        }
+        return genreSongs;
+    }
+    
+    // Sort Songs
+    public List<Song> getLibrarySorted(Comparator<Song> comparator) {
+        return songs.stream().sorted(comparator).toList();
+    }
+    
+    // Shuffle songs in the library
+    public void shuffleLibrary() {
+        List<Song> shuffled = new ArrayList<>(songs);
+        Collections.shuffle(shuffled);
+        songs = new LinkedHashSet<>(shuffled);
+    }
+
+    // Shuffle songs in a specific playlist
+    public void shufflePlaylist(String playlistName) {
+        Playlist playlist = playlists.get(playlistName);
+        if (playlist != null) {
+            playlist.shuffle();
+        }
+    }
+    
+    // Generate automatic playlists
+    public void generateAutomaticPlaylists() {
+        Playlist favorite = new Playlist("Favorite Songs");
+        Playlist topRated = new Playlist("Top Rated");
+        Map<String, Playlist> genrePlaylists = new HashMap<>();
+
+        for (Song song : songs) {
+            if (song.getRating() == Rating.FIVE) {
+                favorite.addSong(song);
+            }
+            if (song.getRating().getValue() >= 4) {
+                topRated.addSong(song);
+            }
+            genrePlaylists.computeIfAbsent(song.getGenre(), k -> new Playlist(k)).addSong(song);
+        }
+
+       // Add the Favorite Songs and Top Rated playlists
+        playlists.put("Favorite Songs", favorite);
+        playlists.put("Top Rated", topRated);
+
+        // Add genre playlists only if they have 10 or more songs
+        for (Map.Entry<String, Playlist> entry : genrePlaylists.entrySet()) {
+            String genre = entry.getKey();
+            Playlist playlist = entry.getValue();
+            if (playlist.getSongs().size() >= 10) {
+                playlists.put(genre, playlist);
+            }
+        }
     }
 
     // Search for User playlist
