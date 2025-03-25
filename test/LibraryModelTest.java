@@ -8,6 +8,7 @@ import store.MusicStore;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -18,8 +19,8 @@ class LibraryModelTest {
     void testAddSongToLibrary() {
         LibraryModel library = new LibraryModel();
         MusicStore store = new MusicStore("resources/albums/albums.txt"); // Assuming files exist
-        Song song = new Song("Blinding Lights", "The Weeknd", "After Hours");
-        Song newSong = new Song("Daydreamer", "Adele", "19");
+        Song song = new Song("Blinding Lights", "The Weeknd", "After Hours", "Pop");
+        Song newSong = new Song("Daydreamer", "Adele", "19", "Pop");
         assertFalse(library.addSong(song, store)); // Should fail if song isn't in store
         assertTrue(library.addSong(newSong, store));
     }
@@ -45,7 +46,7 @@ class LibraryModelTest {
     void testAddSongToPlaylist() {
         LibraryModel library = new LibraryModel();
         library.createPlaylist("Chill Hits");
-        Song song = new Song("Save Your Tears", "The Weeknd", "After Hours");
+        Song song = new Song("Save Your Tears", "The Weeknd", "After Hours", "Pop");
         assertFalse(library.addSongToPlaylist("Chill Hits", song)); // Song must be in library first
     }
     
@@ -54,11 +55,11 @@ class LibraryModelTest {
     	LibraryModel library = new LibraryModel();
     	MusicStore store = new MusicStore("resources/albums/albums.txt");
     	library.createPlaylist("Yo Mama");
-    	Song song = new Song("Daydreamer", "Adele", "19");
+    	Song song = new Song("Daydreamer", "Adele", "19", "Pop");
     	library.addSong(song, store);
     	library.addSongToPlaylist("Yo Mama", song);
     	assertTrue(library.removeSongFromPlaylist("Yo Mama", song));
-    	assertFalse(library.removeSongFromPlaylist("Yo Mama", new Song("YOOOO","ME","Swag")));
+    	assertFalse(library.removeSongFromPlaylist("Yo Mama", new Song("YOOOO","ME","Swag", "lol")));
     	
     }
     
@@ -66,8 +67,8 @@ class LibraryModelTest {
     void testRateAndMakeFav() {
     	LibraryModel library = new LibraryModel();
     	MusicStore store = new MusicStore("resources/albums/albums.txt");
-    	Song song = new Song("Daydreamer", "Adele", "19");
-    	Song newSong = new Song("Save Your Tears", "The Weeknd", "After Hours");
+    	Song song = new Song("Daydreamer", "Adele", "19", "Pop");
+    	Song newSong = new Song("Save Your Tears", "The Weeknd", "After Hours", "Pop");
     	library.addSong(song, store);
     	assertTrue(library.makeFavorite(song));
     	assertFalse(library.makeFavorite(newSong));
@@ -82,7 +83,7 @@ class LibraryModelTest {
     void testSearchSong() {
         LibraryModel library = new LibraryModel();
         MusicStore store = new MusicStore("resources/albums/albums.txt");
-        Song song = new Song("Daydreamer", "Adele", "19");
+        Song song = new Song("Daydreamer", "Adele", "19", "Pop");
 
         library.addSong(song, store);
 
@@ -126,7 +127,7 @@ class LibraryModelTest {
     @Test
     void testListThings(){
         LibraryModel library = new LibraryModel();
-        Song song = new Song("Amen", "Leonard Cohen", "Old Ideas");
+        Song song = new Song("Amen", "Leonard Cohen", "Old Ideas","Singer/Songwriter");
         MusicStore store = new MusicStore("resources/albums/albums.txt");
         Album album = store.getAlbum("Old Ideas", "Leonard Cohen");
         assertNotNull(album, "Album 'Old Ideas' not found in MusicStore!");
@@ -163,6 +164,62 @@ class LibraryModelTest {
         assertTrue(output.contains("Songs:"));
         assertTrue(output.contains("Albums:"));
         assertTrue(output.contains("Playlists:"));
+    }
+    
+ // -------- Part C: Additional Tests --------
+
+    @Test
+    void testRemoveSongAndAlbum() {
+        LibraryModel library = new LibraryModel();
+        MusicStore store = new MusicStore("resources/albums/albums.txt");
+        Song song = new Song("Daydreamer", "Adele", "19", "Pop");
+        Album album = store.getAlbum("19", "Adele");
+        library.addSong(song, store);
+        library.addAlbum(album, store);
+        assertTrue(library.removeSong(song));
+        assertTrue(library.removeAlbum(album));
+    }
+
+    @Test
+    void testSortSongs() {
+        LibraryModel library = new LibraryModel();
+        MusicStore store = new MusicStore("resources/albums/albums.txt");
+        library.addAlbum(store.getAlbum("19", "Adele"), store);
+        List<Song> sorted = library.getLibrarySorted(Comparator.comparing(Song::getTitle));
+        assertFalse(sorted.isEmpty());
+    }
+
+    @Test
+    void testShuffleLibrary() {
+        LibraryModel library = new LibraryModel();
+        MusicStore store = new MusicStore("resources/albums/albums.txt");
+        library.addAlbum(store.getAlbum("19", "Adele"), store);
+        List<String> before = library.listSongs();
+        library.shuffleLibrary();
+        List<String> after = library.listSongs();
+        assertEquals(before.size(), after.size());
+    }
+
+    @Test
+    void testSearchByGenre() {
+        LibraryModel library = new LibraryModel();
+        MusicStore store = new MusicStore("resources/albums/albums.txt");
+        library.addAlbum(store.getAlbum("19", "Adele"), store);
+        List<Song> popSongs = library.searchSongsByGenre("Pop");
+        assertFalse(popSongs.isEmpty());
+    }
+
+    @Test
+    void testAutoPlaylists() {
+        LibraryModel library = new LibraryModel();
+        MusicStore store = new MusicStore("resources/albums/albums.txt");
+        library.addAlbum(store.getAlbum("19", "Adele"), store);
+        for (Song song : library.getSong()) {
+            song.setRating(Rating.FIVE);
+        }
+        library.generateAutomaticPlaylists();
+        assertNotNull(library.searchPlaylist("Favorite Songs"));
+        assertNotNull(library.searchPlaylist("Top Rated"));
     }
 
 }

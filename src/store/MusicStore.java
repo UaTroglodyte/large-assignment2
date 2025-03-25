@@ -29,6 +29,7 @@ public class MusicStore {
                     albumDetails(title,artist);
                 }
             }
+            reader.close();
         } catch (Exception e) {
             System.err.println("Cannot load albums: " + e.getMessage());
         }
@@ -44,11 +45,13 @@ public class MusicStore {
             String info = reader.readLine();
             // Makes sure input is vaild
             if (info == null){
+                reader.close();
                 return;
             }
             String[] classifications  = info.split(",");
             // Makes sure follows "Album, Artist, Genre, Year" format
             if (classifications.length < 4){
+                reader.close();
                 return;
             }
             String genre = classifications[2].trim();
@@ -57,11 +60,12 @@ public class MusicStore {
             String str;
             while ((str = reader.readLine()) != null){
                 str = str.trim();
-                Song song = new Song(str, artist, title);
+                Song song = new Song(str, artist, title, genre);
                 album.addSong(song);
                 songs.put(str + "_" + artist, song);
             }
             albums.put(title + "_" + artist, album);
+            reader.close();
         } catch (Exception e) {
             System.err.println("Cant read the album: " + title + e.getMessage());
         }

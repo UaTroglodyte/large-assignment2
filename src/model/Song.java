@@ -4,13 +4,15 @@ public class Song{
     private String title;
     private String artist;
     private String album;
+    private String genre;
     private Rating rating;
 
 
-    public Song(String title, String artist, String album){
+    public Song(String title, String artist, String album, String genre){
         this.title = title;
         this.artist = artist;
         this.album = album;
+        this.genre = genre;
         this.rating = null;
     }
 
@@ -33,4 +35,14 @@ public class Song{
     public void setRating(Rating rating){
         this.rating = rating;
     }
+    
+    public String getGenre() {
+        return genre;
+    }
+    
+    @Override
+    public String toString() {
+        return title + " - " + artist + " (Album: " + album + ")";
+    }
+
 }

@@ -8,14 +8,20 @@
 
 package model;
 
+
 import java.util.*;
 
 import store.MusicStore;
 
 public class LibraryModel {
+
     private Set<Song> songs; //User song collection
     private Set<Album> albums; // User album collection
     private Map<String, Playlist> playlists; // User playlists
+    private Map<Song, Integer> playCounts; // Track number of times each song is played
+    private Deque<Song> recentPlays; // Track the 10 most recently played songs
+	private Playlist recentPlaylist;
+	private Playlist frequentPlaylist;
 
     /*
      * ------------------------------------------------------------------------------------------------
@@ -26,6 +32,11 @@ public class LibraryModel {
         this.songs = new HashSet<>();
         this.albums = new HashSet<>();
         this.playlists = new HashMap<>();
+        this.playCounts = new HashMap<>();
+        this.recentPlays = new LinkedList<>();
+        // Set defult for most recent and frequent plays
+        this.recentPlaylist = new Playlist("Recent Plays");  // Initialize playlists
+        this.frequentPlaylist = new Playlist("Most Played");
     }
 
 
@@ -37,6 +48,10 @@ public class LibraryModel {
         return false;
     }
 
+    // Overloaded method for testing purposes in TrackingSongTest
+    //public void addSong(Song song) {
+    //    songs.add(song);
+    //}
 
     // Adds album to user library
     public boolean addAlbum(Album album, MusicStore store){
@@ -51,6 +66,16 @@ public class LibraryModel {
             return albumAdd || songAdd;
         }
         return false;
+    }
+    
+    // Removes a Song
+    public boolean removeSong(Song song) {
+        return songs.remove(song);
+    }
+    
+    // Removes an Album
+    public boolean removeAlbum(Album album) {
+        return albums.remove(album);
     }
 
 
@@ -79,19 +104,6 @@ public class LibraryModel {
         return playlist.removeSong(song);
     }
 
-    // Checks to see if there is a favorite playlist, 
-    // if its not then creates a new playlist and adds that song, else just adds song to fav playlist
-    //public boolean addFavorite(Song song){
-    //    if (playlists.containsKey("Favorite") == false){
-    //        createPlaylist("Favorite");
-    //        addSongToPlaylist("Favorite", song);
-    //        return true;
-    //    } else {
-    //        addSongToPlaylist("Favorite", song);
-    //        return true;
-    //    }
-    //}
-
     public boolean makeFavorite(Song song){
         if (songs.contains(song)){
             song.setRating(Rating.FIVE);
@@ -106,6 +118,118 @@ public class LibraryModel {
             return true;
         }
         return false;
+    }
+
+    public void playSong(Song song) {
+        if (!songs.contains(song)) {
+            System.out.println("Song not found in library.");
+            return;
+        }
+        // Update play count
+        playCounts.put(song, playCounts.getOrDefault(song, 0) + 1);
+        recentPlays.remove(song);
+        recentPlays.addFirst(song);
+        
+        // Keep only the 10 most recent songs
+        if (recentPlays.size() > 10) {
+            System.out.println("Removing oldest song: " + recentPlays.getLast().getTitle());
+            recentPlays.removeLast();
+        }
+
+        // used for bug fixing        
+        //System.out.println("Recent Plays After Adding " + song.getTitle() + ": " +
+        //        recentPlays.stream().map(Song::getTitle).toList());
+        
+        updateRecentPlaysPlaylist();
+        updateMostPlayedPlaylist();
+    }
+
+    // Updates Recently Played playlist
+    private void updateRecentPlaysPlaylist() {
+    	if (recentPlaylist == null) {
+            recentPlaylist = new Playlist("Recent Plays");
+        }
+
+        recentPlaylist.clearSongs();
+        for (Song song : recentPlays) {
+            recentPlaylist.addSong(song);
+        }
+    }
+
+    // Updates Most Played playlist
+    private void updateMostPlayedPlaylist() {
+    	if (frequentPlaylist == null) {
+            frequentPlaylist = new Playlist("Most Played");
+        }
+
+        frequentPlaylist.clearSongs();
+        Playlist mostPlayed = getMostPlayedPlaylist();  
+        List<Song> sortedSongs = mostPlayed.getSongs();  // Get the actual song list
+
+        for (int i = 0; i < Math.min(10, sortedSongs.size()); i++) {
+            frequentPlaylist.addSong(sortedSongs.get(i));
+        }
+    }
+    
+ // Search User Library for genre
+    public List<Song> searchSongsByGenre(String genre){
+        List<Song> genreSongs = new ArrayList<>();
+        for (Song song : songs){
+            if (song.getGenre().equalsIgnoreCase(genre)){
+                genreSongs.add(song);
+            }
+        }
+        return genreSongs;
+    }
+    
+    // Sort Songs
+    public List<Song> getLibrarySorted(Comparator<Song> comparator) {
+        return songs.stream().sorted(comparator).toList();
+    }
+    
+    // Shuffle songs in the library
+    public void shuffleLibrary() {
+        List<Song> shuffled = new ArrayList<>(songs);
+        Collections.shuffle(shuffled);
+        songs = new LinkedHashSet<>(shuffled);
+    }
+
+    // Shuffle songs in a specific playlist
+    public void shufflePlaylist(String playlistName) {
+        Playlist playlist = playlists.get(playlistName);
+        if (playlist != null) {
+            playlist.shuffle();
+        }
+    }
+    
+    // Generate automatic playlists
+    public void generateAutomaticPlaylists() {
+        Playlist favorite = new Playlist("Favorite Songs");
+        Playlist topRated = new Playlist("Top Rated");
+        Map<String, Playlist> genrePlaylists = new HashMap<>();
+
+        for (Song song : songs) {
+            if (song.getRating() == Rating.FIVE) {
+                favorite.addSong(song);
+            }
+            if (song.getRating().getValue() >= 4) {
+                topRated.addSong(song);
+            }
+            genrePlaylists.computeIfAbsent(song.getGenre(), k -> new Playlist(k)).addSong(song);
+        }
+
+       // Add the Favorite Songs and Top Rated playlists
+        playlists.put("Favorite Songs", favorite);
+        playlists.put("Top Rated", topRated);
+
+        // Add genre playlists only if they have 10 or more songs
+        for (Map.Entry<String, Playlist> entry : genrePlaylists.entrySet()) {
+            String genre = entry.getKey();
+            Playlist playlist = entry.getValue();
+            if (playlist.getSongs().size() >= 10) {
+                playlists.put(genre, playlist);
+            }
+        }
     }
 
     // ------------------------------------------------------------------------------------------------
@@ -227,6 +351,26 @@ public class LibraryModel {
 
     public Map<String, Playlist> getPlaylist(){
         return Collections.unmodifiableMap(playlists);
+    }
+
+    public Playlist getRecentPlaysPlaylist() {
+        return recentPlaylist;
+    }
+
+    public Playlist getMostPlayedPlaylist() {
+        Playlist frequentPlaylist = new Playlist("Most Played");
+
+        // Sort songs by play count (descending)
+        // Cool method I learned in Cs 372
+        List<Song> sortedSongs = new ArrayList<>(playCounts.keySet());
+        sortedSongs.sort((a, b) -> playCounts.get(b) - playCounts.get(a));
+
+        // Add top 10 to the playlist
+        for (int i = 0; i < Math.min(10, sortedSongs.size()); i++) {
+            frequentPlaylist.addSong(sortedSongs.get(i));
+        }
+
+        return frequentPlaylist;
     }
 
     @Override

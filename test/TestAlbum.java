@@ -22,7 +22,7 @@ class TestAlbum {
 	    @Test
 	    void testAddSong() {
 	        Album album = new Album("25", "Adele", "Pop", 2015);
-	        Song song = new Song("Hello", "Adele", "25");
+	        Song song = new Song("Hello", "Adele", "25", "Pop");
 	        album.addSong(song);
 	        List<Song> songs = album.getSongs();
 	        assertEquals(1, songs.size());
@@ -32,7 +32,7 @@ class TestAlbum {
 	    @Test
 	    void testAddInvalidSongThrowsException() {
 	        Album album = new Album("25", "Adele", "Pop", 2015);
-	        Song song = new Song("Rolling in the Deep", "Adele", "21"); // Wrong album
+	        Song song = new Song("Rolling in the Deep", "Adele", "21", "Pop"); // Wrong album
 	        assertThrows(IllegalArgumentException.class, () -> album.addSong(song));
 	    }
 

@@ -9,7 +9,7 @@ public class TestSong {
     
     @Test
     void testSong(){
-        Song song = new Song("Hello", "Adele", "25");
+        Song song = new Song("Hello", "Adele", "25", "Pop");
         assertEquals("Hello", song.getTitle());
         assertEquals("Adele", song.getArtist());
         assertEquals("25", song.getAlbum());
@@ -17,7 +17,7 @@ public class TestSong {
 
     @Test
     void testRating(){
-        Song song = new Song("Someone Like You", "Adele", "21");
+        Song song = new Song("Someone Like You", "Adele", "21", "Pop");
         song.setRating(Rating.FIVE);
         assertEquals(Rating.FIVE, song.getRating());
         song.setRating(Rating.ONE);
