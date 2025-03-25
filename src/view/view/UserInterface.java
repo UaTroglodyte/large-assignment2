@@ -14,80 +14,149 @@ public class UserInterface {
     private Scanner scanner;
     private LibraryModel library;
     private MusicStore store;
+    private UserManager userManager;
+    private User currentUser;
 
-    public UserInterface(LibraryModel library, MusicStore store) {
+    public UserInterface(LibraryModel library, MusicStore store, UserManager userManager) {
         this.scanner = new Scanner(System.in);
         this.library = library;
         this.store = store;
+        this.userManager = userManager;
+        this.currentUser = null;
     }
 
     public void start() {
         while (true) {
-            System.out.println("\nMusic Library Menu:");
-            System.out.println("1. Search for a Song");
-            System.out.println("2. Search for an Album");
-            System.out.println("3. Add Song to Library");
-            System.out.println("4. Add Album to Library");
-            System.out.println("5. Create Playlist");
-            System.out.println("6. Add Song to Playlist");
-            System.out.println("7. Rate a Song");
-            System.out.println("8. Mark Song as Favorite");
-            System.out.println("9. List Favorite Songs");
-            System.out.println("10. List Songs in Library");
-            System.out.println("11. List Playlists");
-            System.out.println("12. List Album from Library");
-            System.out.println("13. List Artists in Library");
-            System.out.println("14. Exit");
-            System.out.print("Enter choice: ");
-            
-            int choice = scanner.nextInt();
-            scanner.nextLine();
-            
-            switch (choice) {
-                case 1:
-                    searchSongOption();
-                    break;
-                case 2:
-                    searchAlbumOption();
-                    break;
-                case 3:
-                    addSongToLibrary();
-                    break;
-                case 4:
-                    addAlbumToLibrary();
-                    break;
-                case 5:
-                    createPlaylist();
-                    break;
-                case 6:
-                    addSongToPlaylist();
-                    break;
-                case 7:
-                	rateSong();
-                    break;
-                case 8:
-                    markSongAsFavorite();
-                    break;
-                case 9:
-                	listFavoriteSongs();
-                    break;
-                case 10:
-                	listSongs();
-                	break;
-                case 11:
-                	viewPlaylists();
-                	break;
-                case 12:
-                    listAlbums();
-                    break;
-                case 13:
-                    listArtists();
-                    break;
-                case 14:
-                    System.out.println("Exiting...");
-                    return;
-                default:
-                    System.out.println("Invalid choice. Try again.");            }
+            if (currentUser == null) {
+                authenticateUser();
+            } else {
+                mainMenu();
+            }
+        }
+    }
+
+    private void authenticateUser() {
+        System.out.println("Welcome! Please log in or register.");
+        System.out.println("1. Log In");
+        System.out.println("2. Register");
+        System.out.println("3. Exit");
+        System.out.print("Enter choice: ");
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+
+        switch (choice) {
+            case 1:
+                logIn();
+                break;
+            case 2:
+                register();
+                break;
+            case 3:
+                System.out.println("Goodbye!");
+                System.exit(0);
+                break;
+            default:
+                System.out.println("Invalid choice. Try again.");
+        }
+    }
+
+    private void logIn() {
+        System.out.print("Enter username: ");
+        String username = scanner.nextLine();
+        System.out.print("Enter password: ");
+        String password = scanner.nextLine();
+        if (userManager.login(username, password)) {
+            currentUser = new User(username);
+            System.out.println("Login successful! Welcome, " + currentUser.getUsername() + "!");
+        } else {
+            System.out.println("Invalid credentials. Try again.");
+        }
+    }
+
+    private void register() {
+        System.out.print("Enter new username: ");
+        String username = scanner.nextLine();
+        System.out.print("Enter new password: ");
+        String password = scanner.nextLine();
+
+        if (userManager.registerUser(username, password)) {
+            System.out.println("Registration successful! You can now log in.");
+        } else {
+            System.out.println("Username already exists. Try again.");
+        }
+    }
+
+    private void mainMenu() {
+        System.out.println("\nMusic Library Menu:");
+        System.out.println("1. Search for a Song");
+        System.out.println("2. Search for an Album");
+        System.out.println("3. Add Song to Library");
+        System.out.println("4. Add Album to Library");
+        System.out.println("5. Create Playlist");
+        System.out.println("6. Add Song to Playlist");
+        System.out.println("7. Rate a Song");
+        System.out.println("8. Mark Song as Favorite");
+        System.out.println("9. List Favorite Songs");
+        System.out.println("10. List Songs in Library");
+        System.out.println("11. List Playlists");
+        System.out.println("12. List Album from Library");
+        System.out.println("13. List Artists in Library");
+        System.out.println("14. Log Out");
+        System.out.println("15. Exit");
+        System.out.print("Enter choice: ");
+        
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+        
+        switch (choice) {
+            case 1:
+                searchSongOption();
+                break;
+            case 2:
+                searchAlbumOption();
+                break;
+            case 3:
+                addSongToLibrary();
+                break;
+            case 4:
+                addAlbumToLibrary();
+                break;
+            case 5:
+                createPlaylist();
+                break;
+            case 6:
+                addSongToPlaylist();
+                break;
+            case 7:
+                rateSong();
+                break;
+            case 8:
+                markSongAsFavorite();
+                break;
+            case 9:
+                listFavoriteSongs();
+                break;
+            case 10:
+                listSongs();
+                break;
+            case 11:
+                viewPlaylists();
+                break;
+            case 12:
+                listAlbums();
+                break;
+            case 13:
+                listArtists();
+                break;
+            case 14:
+                logOut();
+                break;
+            case 15:
+                System.out.println("Exiting...");
+                System.exit(0);
+                break;
+            default:
+                System.out.println("Invalid choice. Try again.");
         }
     }
     
@@ -330,6 +399,11 @@ public class UserInterface {
             System.out.println("Could not mark song as favorite.");
         }
     }
+
+    private void logOut() {
+        System.out.println("Logging out...");
+        currentUser = null;
+    }
     
     public static void main(String[] args) {
         // Initialize Music Store with the path to albums file
@@ -337,9 +411,11 @@ public class UserInterface {
         
         // Initialize User's Library
         LibraryModel library = new LibraryModel();
+
+        UserManager userManager = new UserManager();
         
         // Start the User Interface
-        UserInterface ui = new UserInterface(library, store);
+        UserInterface ui = new UserInterface(library, store, userManager);
         ui.start();
     }
 }
