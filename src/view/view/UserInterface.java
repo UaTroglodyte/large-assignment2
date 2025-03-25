@@ -87,105 +87,114 @@ public class UserInterface {
     }
 
     private void mainMenu() {
-        System.out.println("\nMusic Library Menu:");
-        System.out.println("1. Search for a Song");
-        System.out.println("2. Search for an Album");
-        System.out.println("3. Add Song to Library");
-        System.out.println("4. Add Album to Library");
-        System.out.println("5. Create Playlist");
-        System.out.println("6. Add Song to Playlist");
-        System.out.println("7. Rate a Song");
-        System.out.println("8. Mark Song as Favorite");
-        System.out.println("9. List Favorite Songs");
-        System.out.println("10. List Songs in Library");
-        System.out.println("11. List Playlists");
-        System.out.println("12. List Album from Library");
-        System.out.println("13. List Artists in Library");
-        System.out.println("14. Shuffle Library");
-        System.out.println("15. Play a Song");
-        System.out.println("16. View Most Played Songs");
-        System.out.println("17. View Recently Played Songs");
-        System.out.println("18. Generate Auto Playlists");
-        System.out.println("19. Remove Song from Library");
-        System.out.println("20. Remove Album from Library");
-        System.out.println("21. View Sorted Songs");
-        System.out.println("22. Search By Genre");
-        System.out.println("23. Log Out");
-        System.out.println("24. Exit");
-        System.out.print("Enter choice: ");
+    	System.out.println("\n🎵 Music Library Menu:");
+    	System.out.println("1.  Search for a Song");
+    	System.out.println("2.  Search for an Album");
+    	System.out.println("3.  Search By Genre");
+
+    	System.out.println("4.  Add Song to Library");
+    	System.out.println("5.  Add Album to Library");
+
+    	System.out.println("6.  Remove Song from Library");
+    	System.out.println("7.  Remove Album from Library");
+
+    	System.out.println("8.  Shuffle Library");
+    	System.out.println("9.  View Sorted Songs");
+
+    	System.out.println("10. List Songs in Library");
+    	System.out.println("11. List Albums in Library");
+    	System.out.println("12. List Artists in Library");
+
+    	System.out.println("13. Rate a Song");
+    	System.out.println("14. Mark Song as Favorite");
+    	System.out.println("15. List Favorite Songs");
+
+    	System.out.println("16. Create Playlist");
+    	System.out.println("17. Add Song to Playlist");
+    	System.out.println("18. View Playlists");
+    	System.out.println("19. Generate Auto Playlists");
+
+    	System.out.println("20. Play a Song");
+    	System.out.println("21. View Most Played Songs");
+    	System.out.println("22. View Recently Played Songs");
+
+    	System.out.println("23. Log Out");
+    	System.out.println("24. Exit");
+    	System.out.print("Enter choice: ");
         
         int choice = scanner.nextInt();
         scanner.nextLine();
         
-        switch (choice) {
-            case 1:
-                searchSongOption();
-                break;
-            case 2:
-                searchAlbumOption();
-                break;
-            case 3:
-                addSongToLibrary();
-                break;
-            case 4:
-                addAlbumToLibrary();
-                break;
-            case 5:
-                createPlaylist();
-                break;
-            case 6:
-                addSongToPlaylist();
-                break;
-            case 7:
-                rateSong();
-                break;
-            case 8:
-                markSongAsFavorite();
-                break;
-            case 9:
-                listFavoriteSongs();
-                break;
-            case 10:
-                listSongs();
-                break;
-            case 11:
-                viewPlaylists();
-                break;
-            case 12:
-                listAlbums();
-                break;
-            case 13:
-                listArtists();
-                break;
-            case 14:
-                library.shuffleLibrary();
-                System.out.println("Library shuffled.");
-                break;
-            case 15:
-                playSong();
-                break;
-            case 16:
-                viewMostPlayed();
-                break;
-            case 17:
-                viewRecentlyPlayed();
-                break;
-            case 18:
-                library.generateAutomaticPlaylists();
-                System.out.println("Auto playlists generated.");
-                break;
-            case 19:
-            	removeSongFromLibrary();
-            	break;
-            case 20:
-            	removeAlbumFromLibrary();
-            	break;
-            case 21:
-            	viewSortedSongs();
-            	break;
-            case 22:
-            	searchByGenre();
-            	break;
+
+		switch (choice) {
+		    case 1:
+		        searchSongOption();
+		        break;
+		    case 2:
+		        searchAlbumOption();
+		        break;
+		    case 3:
+		        searchByGenre();
+		        break;
+		    case 4:
+		        addSongToLibrary();
+		        break;
+		    case 5:
+		        addAlbumToLibrary();
+		        break;
+		    case 6:
+		        removeSongFromLibrary();
+		        break;
+		    case 7:
+		        removeAlbumFromLibrary();
+		        break;
+		    case 8:
+		        library.shuffleLibrary();
+		        System.out.println("Library shuffled.");
+		        break;
+		    case 9:
+		        viewSortedSongs();
+		        break;
+		    case 10:
+		        listSongs();
+		        break;
+		    case 11:
+		        listAlbums();
+		        break;
+		    case 12:
+		        listArtists();
+		        break;
+		    case 13:
+		        rateSong();
+		        break;
+		    case 14:
+		        markSongAsFavorite();
+		        break;
+		    case 15:
+		        listFavoriteSongs();
+		        break;
+		    case 16:
+		        createPlaylist();
+		        break;
+		    case 17:
+		        addSongToPlaylist();
+		        break;
+		    case 18:
+		        viewPlaylists();
+		        break;
+		    case 19:
+		        library.generateAutomaticPlaylists();
+		        System.out.println("Auto playlists generated.");
+		        break;
+		    case 20:
+		        playSong();
+		        break;
+		    case 21:
+		        viewMostPlayed();
+		        break;
+		    case 22:
+		        viewRecentlyPlayed();
+		        break;
             case 23:
                 logOut();
                 break;
@@ -585,7 +594,7 @@ public class UserInterface {
     
     public static void main(String[] args) {
         // Initialize Music Store with the path to albums file
-        MusicStore store = new MusicStore("resources/albums/albums.txt"); 
+        MusicStore store = new MusicStore("resources/albums/albums.txt"); // Update path if needed
         
         // Initialize User's Library
         LibraryModel library = new LibraryModel();
