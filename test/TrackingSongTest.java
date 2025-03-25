@@ -18,17 +18,17 @@ public class TrackingSongTest {
     void setUp() {
         library = new LibraryModel();
 
-        song1 = new Song("Song 1", "Artist A", "Album A");
-        song2 = new Song("Song 2", "Artist B", "Album B");
-        song3 = new Song("Song 3", "Artist C", "Album C");
-        song4 = new Song("Song 4", "Artist D", "Album D");
-        song5 = new Song("Song 5", "Artist E", "Album E");
-        song6 = new Song("Song 6", "Artist F", "Album F");
-        song7 = new Song("Song 7", "Artist G", "Album G");
-        song8 = new Song("Song 8", "Artist H", "Album H");
-        song9 = new Song("Song 9", "Artist I", "Album I");
-        song10 = new Song("Song 10", "Artist J", "Album J");
-        song11 = new Song("Song 11", "Artist K", "Album K"); // Used for testing recent limit
+        song1 = new Song("Song 1", "Artist A", "Album A", "Genre A");
+        song2 = new Song("Song 2", "Artist B", "Album B", "Genre B");
+        song3 = new Song("Song 3", "Artist C", "Album C", "Genre C");
+        song4 = new Song("Song 4", "Artist D", "Album D", "Genre D");
+        song5 = new Song("Song 5", "Artist E", "Album E", "Genre E");
+        song6 = new Song("Song 6", "Artist F", "Album F", "Genre F");
+        song7 = new Song("Song 7", "Artist G", "Album G", "Genre G");
+        song8 = new Song("Song 8", "Artist H", "Album H", "Genre H");
+        song9 = new Song("Song 9", "Artist I", "Album I", "Genre I");
+        song10 = new Song("Song 10", "Artist J", "Album J", "Genre J");
+        song11 = new Song("Song 11", "Artist K", "Album K", "Genre K"); // Used for testing recent limit
 
         // Add songs to the library
         library.addSong(song1);

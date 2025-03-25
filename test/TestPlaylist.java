@@ -19,7 +19,7 @@ class TestPlaylist {
     @Test
     void testAddSong() {
         Playlist playlist = new Playlist("Road Trip");
-        Song song = new Song("Shape of You", "Ed Sheeran", "Divide");
+        Song song = new Song("Shape of You", "Ed Sheeran", "Divide", "Pop");
         playlist.addSong(song);
         List<Song> songs = playlist.getSongs();
         assertEquals(1, songs.size());
@@ -29,7 +29,7 @@ class TestPlaylist {
     @Test
     void testRemoveSong() {
         Playlist playlist = new Playlist("Chill Vibes");
-        Song song = new Song("Stay", "The Kid LAROI", "F*ck Love 3");
+        Song song = new Song("Stay", "The Kid LAROI", "F*ck Love 3", "Pop");
         playlist.addSong(song);
         assertTrue(playlist.removeSong(song));
         assertTrue(playlist.getSongs().isEmpty());
