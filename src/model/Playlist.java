@@ -36,6 +36,10 @@ public class Playlist{
         songs.clear();
     }
 
+    public void shuffle() {
+        Collections.shuffle(songs);
+    }
+
     public String getName(){
         return name;
     }
